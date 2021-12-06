@@ -1,17 +1,19 @@
+from collections import Counter
+
 
 def simulate(days):
     with open('input') as f:
-        lanternfishes = list(map(int, f.read().split(',')))
-        for _ in range(days):
-            next_generation = []
-            for i in range(len(lanternfishes)):
-                if lanternfishes[i] == 0:
-                    next_generation.append(8)
-                    lanternfishes[i] = 6
-                else:
-                    lanternfishes[i] -= 1
-            lanternfishes.extend(next_generation)
-    return len(lanternfishes)
+        population = Counter(list(map(int, f.read().split(','))))
+    for _ in range(days):
+        next_gen = population[0]
+        population[0] = 0
+        for i in range(1,9):
+            population[i-1] += population[i]
+            population[i] = 0
+        population[6] += next_gen
+        population[8] += next_gen
+
+    return sum(population.values())
 
 
 if __name__ == '__main__':
